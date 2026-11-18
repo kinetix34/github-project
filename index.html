@@ -217,16 +217,24 @@
 
   async function init() {
     const transport = new EpoxyTransport({ wisp: "wss://wisp.mercurywork.shop/" });
-    const myProxy = new Controller({ serviceworker: true, transport, scramjetConfig: defaultConfig });
-    await myProxy.wait();
+    const myProxy = new Controller({ 
+      serviceworker: false, // bypasses the sw postMessage crash loop
+      transport, 
+      scramjetConfig: defaultConfig 
+    });
+    
     const frame = myProxy.createFrame(document.getElementById("proxy-frame"));
     window.scramjetFrame = frame;
     frame.go("https://duckduckgo.com");
   }
 
   navigator.serviceWorker.register("/sw.js").then(() => {
-    return navigator.serviceWorker.ready;
-  }).then(init);
+    if (!navigator.serviceWorker.controller) {
+      window.location.reload(); // forces reload so sw takes control instantly
+    } else {
+      init();
+    }
+  });
 </script>
   </body>
 </html>
