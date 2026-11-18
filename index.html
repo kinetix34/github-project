@@ -218,14 +218,8 @@
   async function init() {
     const transport = new EpoxyTransport({ wisp: "wss://wisp.mercurywork.shop/" });
     const myProxy = new Controller({ serviceworker: true, transport, scramjetConfig: defaultConfig });
-await myProxy.wait();
-const proxyFrame = myProxy.createFrame(document.getElementById("proxy-frame"));
-proxyFrame.go("https://example.com");
-window.scramjetFrame = proxyFrame;
-
-    await scramjet.wait();
-
-    const frame = scramjet.createFrame(document.getElementById("proxy-frame"));
+    await myProxy.wait();
+    const frame = myProxy.createFrame(document.getElementById("proxy-frame"));
     window.scramjetFrame = frame;
     frame.go("https://duckduckgo.com");
   }
