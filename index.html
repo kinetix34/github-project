@@ -224,7 +224,9 @@
     frame.go("https://duckduckgo.com");
   }
 
-  navigator.serviceWorker.register("/sw.js").then(init);
+  navigator.serviceWorker.register("/sw.js").then(() => {
+    return navigator.serviceWorker.ready;
+  }).then(init);
 </script>
   </body>
 </html>
