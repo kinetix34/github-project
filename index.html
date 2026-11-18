@@ -216,29 +216,21 @@
   const EpoxyTransport = self.EpoxyTransport.default;
 
   async function init() {
-    const transport = new EpoxyTransport({ 
-      wisp: (location.protocol === "https:" ? "wss://" : "ws://") + location.host + "/wisp/" 
-    });
-    const scramjet = new Controller({ 
-      serviceworker: true, 
-      transport, 
-      scramjetConfig: defaultConfig 
-    });
-    
+    const transport = new EpoxyTransport({ wisp: "wss://wisp.mercurywork.shop/" });
+    const myProxy = new Controller({ serviceworker: true, transport, scramjetConfig: defaultConfig });
+await myProxy.wait();
+const proxyFrame = myProxy.createFrame(document.getElementById("proxy-frame"));
+proxyFrame.go("https://example.com");
+window.scramjetFrame = proxyFrame;
+
     await scramjet.wait();
 
-    // target your iframe here
     const frame = scramjet.createFrame(document.getElementById("proxy-frame"));
-    
-    // load any website you want inside the iframe
+    window.scramjetFrame = frame;
     frame.go("https://duckduckgo.com");
   }
 
   navigator.serviceWorker.register("/sw.js").then(init);
-  // inside your async init() function:
-const frame = scramjet.createFrame(document.getElementById("proxy-frame"));
-window.scramjetFrame = frame; // save it globally
-frame.go("https://example.com");
 </script>
   </body>
 </html>
